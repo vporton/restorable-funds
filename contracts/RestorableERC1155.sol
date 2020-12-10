@@ -3,21 +3,27 @@ pragma solidity ^0.7.0;
 
 import "./ERC1155.sol";
 
-contract RestorableERC1155 is ERC1155 {
+abstract contract RestorableERC1155 is ERC1155 {
     mapping(address => address) public originalAddresses; // mapping from old to new account addresses
 
     mapping(address => address) public newToOldAccount; // mapping from old to new account addresses
 
     constructor (string memory uri_) ERC1155(uri_) { }
 
-    function restoreAccount(address oldAccount_, address newAccount_) public {
+    function permitRestoreAccount(address oldAccount_, address newAccount_) public
+        checkRestoreOperator(newAccount_)
+    {
+        // If originalAddresses[oldAccount_] == 0, disassociate newAccount_ with another account. That's not a vulnerability.
+        originalAddresses[newAccount_] = originalAddresses[oldAccount_];
+    }
+
+    function restoreAccount(address oldAccount_, address newAccount_) public
+        checkMovedOwner(oldAccount_, newAccount_)
+    {
         require(allowedRestoreAccount(oldAccount_, newAccount_), "Not permitted.");
         newToOldAccount[newAccount_] = oldAccount_;
         emit AccountRestored(oldAccount_, newAccount_);
     }
-
-    // TODO: restoreFunds and restoreFundsBatch does a bad thing with originalAddresses
-    // if an operator calls this function several times in a row to restore an account.
 
     function restoreFunds(address oldAccount_, address newAccount_, uint256 token_) public
         checkRestoreOperator(newAccount_)
@@ -27,9 +33,6 @@ contract RestorableERC1155 is ERC1155 {
 
         _balances[token_][newAccount_] = _balances[token_][oldAccount_];
         _balances[token_][oldAccount_] = 0;
-
-        // FIXME: Should not be doable by operator.
-        originalAddresses[newAccount_] = originalAddresses[oldAccount_];
 
         emit TransferSingle(_msgSender(), oldAccount_, newAccount_, token_, amount);
     }
@@ -47,9 +50,6 @@ contract RestorableERC1155 is ERC1155 {
             _balances[token][newAccount_] = _balances[token][oldAccount_];
             _balances[token][oldAccount_] = 0;
         }
-
-        // FIXME: Should not be doable by operator.
-        originalAddresses[newAccount_] = originalAddresses[oldAccount_];
 
         emit TransferBatch(_msgSender(), oldAccount_, newAccount_, tokens_, amounts);
     }
@@ -147,10 +147,7 @@ contract RestorableERC1155 is ERC1155 {
     // Modifiers //
 
     modifier checkRestoreOperator(address newAccount_) virtual {
-        require(
-            newAccount_ == _msgSender() || isApprovedForAll(newAccount_, _msgSender()),
-            "ERC1155: caller is not owner nor approved"
-        );
+        require(newAccount_ == _msgSender(), "Not account owner.");
         _;
     }
 
