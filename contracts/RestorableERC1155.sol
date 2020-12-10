@@ -18,7 +18,7 @@ abstract contract RestorableERC1155 is ERC1155WithMappedAddresses {
     function restoreAccount(address oldAccount_, address newAccount_) public
         checkMovedOwner(oldAccount_, newAccount_)
     {
-        require(allowedRestoreAccount(oldAccount_, newAccount_), "Not permitted.");
+        checkAllowedRestoreAccount(oldAccount_, newAccount_);
         newToOldAccount[newAccount_] = oldAccount_;
         emit AccountRestored(oldAccount_, newAccount_);
     }
@@ -52,9 +52,7 @@ abstract contract RestorableERC1155 is ERC1155WithMappedAddresses {
         emit TransferBatch(_msgSender(), oldAccount_, newAccount_, tokens_, amounts);
     }
 
-    function allowedRestoreAccount(address /*oldAccount_*/, address /*newAccount_*/) public virtual returns (bool) {
-        return false;
-    }
+    function checkAllowedRestoreAccount(address /*oldAccount_*/, address /*newAccount_*/) public virtual;
 
     function originalAddress(address account) public view virtual override returns (address) {
         address newAddress = originalAddresses[account];
