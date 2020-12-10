@@ -83,7 +83,7 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
      *
      * - `account` cannot be the zero address.
      */
-    function balanceOf(address account, uint256 id) public view override returns (uint256) {
+    function balanceOf(address account, uint256 id) public view virtual override returns (uint256) {
         require(account != address(0), "ERC1155: balance query for the zero address");
         return _balances[id][account];
     }
@@ -101,6 +101,7 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
     )
         public
         view
+        virtual
         override
         returns (uint256[] memory)
     {
@@ -129,7 +130,7 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
     /**
      * @dev See {IERC1155-isApprovedForAll}.
      */
-    function isApprovedForAll(address account, address operator) public view override returns (bool) {
+    function isApprovedForAll(address account, address operator) public view virtual override returns (bool) {
         return _operatorApprovals[account][operator];
     }
 
