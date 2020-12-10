@@ -1,0 +1,9 @@
+{
+  "name": "restorable-funds",
+  "version": "0.0.1",
+  "description": "Token contracts that allow to restore a lost account.",
+  "main": "index.js",
+  "repository": "https://github.com/vporton/restorable-funds",
+  "author": "Victor Porton",
+  "license": "GPL-3.0"
+}
