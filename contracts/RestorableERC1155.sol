@@ -56,7 +56,7 @@ abstract contract RestorableERC1155 is ERC1155WithMappedAddresses {
         return false;
     }
 
-    function lastAddress(address account) public view override returns (address) {
+    function originalAddress(address account) public view override returns (address) {
         address newAddress = originalAddresses[account];
         return newAddress != address(0) ? newAddress : account;
     }
@@ -66,7 +66,7 @@ abstract contract RestorableERC1155 is ERC1155WithMappedAddresses {
     function _upgradeAccounts(address[] memory accounts, address[] memory newAccounts) view override internal {
         // assert(accounts.length == newAccounts.length);
         for (uint i = 0; i < accounts.length; ++i) {
-            newAccounts[i] = lastAddress(accounts[i]);
+            newAccounts[i] = originalAddress(accounts[i]);
         }
     }
 

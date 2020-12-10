@@ -9,7 +9,7 @@ contract ERC1155WithMappedAddresses is ERC1155 {
     constructor (string memory uri_) ERC1155(uri_) { }
 
     /// Don't forget to override also _upgradeAccounts().
-    function lastAddress(address account) public virtual view returns (address) {
+    function originalAddress(address account) public virtual view returns (address) {
         return account;
     }
 
@@ -21,7 +21,7 @@ contract ERC1155WithMappedAddresses is ERC1155 {
     // Overrides //
 
     function balanceOf(address account, uint256 id) public view override returns (uint256) {
-        return super.balanceOf(lastAddress(account), id);
+        return super.balanceOf(originalAddress(account), id);
     }
 
     function balanceOfBatch(
@@ -39,11 +39,11 @@ contract ERC1155WithMappedAddresses is ERC1155 {
     }
 
     function setApprovalForAll(address operator, bool approved) public virtual override {
-        return super.setApprovalForAll(lastAddress(operator), approved);
+        return super.setApprovalForAll(originalAddress(operator), approved);
     }
 
     function isApprovedForAll(address account, address operator) public view override returns (bool) {
-        return super.isApprovedForAll(lastAddress(account), operator);
+        return super.isApprovedForAll(originalAddress(account), operator);
     }
 
     function safeTransferFrom(
@@ -57,7 +57,7 @@ contract ERC1155WithMappedAddresses is ERC1155 {
         virtual
         override
     {
-        return super.safeTransferFrom(lastAddress(from), lastAddress(to), id, amount, data);
+        return super.safeTransferFrom(originalAddress(from), originalAddress(to), id, amount, data);
     }
 
     function safeBatchTransferFrom(
@@ -71,22 +71,22 @@ contract ERC1155WithMappedAddresses is ERC1155 {
         virtual
         override
     {
-        return super.safeBatchTransferFrom(lastAddress(from), lastAddress(to), ids, amounts, data);
+        return super.safeBatchTransferFrom(originalAddress(from), originalAddress(to), ids, amounts, data);
     }
     
     function _mint(address account, uint256 id, uint256 amount, bytes memory data) internal virtual override {
-        return super._mint(lastAddress(account), id, amount, data);
+        return super._mint(originalAddress(account), id, amount, data);
     }
 
     function _mintBatch(address to, uint256[] memory ids, uint256[] memory amounts, bytes memory data) internal virtual override {
-        return super._mintBatch(lastAddress(to), ids, amounts, data);
+        return super._mintBatch(originalAddress(to), ids, amounts, data);
     }
 
     function _burn(address account, uint256 id, uint256 amount) internal virtual override {
-        return super._burn(lastAddress(account), id, amount);
+        return super._burn(originalAddress(account), id, amount);
     }
 
     function _burnBatch(address account, uint256[] memory ids, uint256[] memory amounts) internal virtual override {
-        return super._burnBatch(lastAddress(account), ids, amounts);
+        return super._burnBatch(originalAddress(account), ids, amounts);
     }
 }
