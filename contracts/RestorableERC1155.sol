@@ -28,6 +28,7 @@ contract RestorableERC1155 is ERC1155 {
         _balances[token_][newAccount_] = _balances[token_][oldAccount_];
         _balances[token_][oldAccount_] = 0;
 
+        // FIXME: Should not be doable by operator.
         originalAddresses[newAccount_] = originalAddresses[oldAccount_];
 
         emit TransferSingle(_msgSender(), oldAccount_, newAccount_, token_, amount);
@@ -47,6 +48,7 @@ contract RestorableERC1155 is ERC1155 {
             _balances[token][oldAccount_] = 0;
         }
 
+        // FIXME: Should not be doable by operator.
         originalAddresses[newAccount_] = originalAddresses[oldAccount_];
 
         emit TransferBatch(_msgSender(), oldAccount_, newAccount_, tokens_, amounts);
