@@ -24,14 +24,8 @@ contract ERC1155WithMappedAddresses is ERC1155 {
         return super.balanceOf(originalAddress(account), id);
     }
 
-    function balanceOfBatch(
-        address[] memory accounts,
-        uint256[] memory ids
-    )
-        public
-        view
-        override
-        returns (uint256[] memory)
+    function balanceOfBatch(address[] memory accounts, uint256[] memory ids)
+        public view override returns (uint256[] memory)
     {
         address[] memory newAccounts = new address[](accounts.length);
         _upgradeAccounts(accounts, newAccounts);
@@ -46,16 +40,8 @@ contract ERC1155WithMappedAddresses is ERC1155 {
         return super.isApprovedForAll(originalAddress(account), operator);
     }
 
-    function safeTransferFrom(
-        address from,
-        address to,
-        uint256 id,
-        uint256 amount,
-        bytes memory data
-    )
-        public
-        virtual
-        override
+    function safeTransferFrom(address from, address to, uint256 id, uint256 amount, bytes memory data)
+        public virtual override
     {
         return super.safeTransferFrom(originalAddress(from), originalAddress(to), id, amount, data);
     }
@@ -67,9 +53,7 @@ contract ERC1155WithMappedAddresses is ERC1155 {
         uint256[] memory amounts,
         bytes memory data
     )
-        public
-        virtual
-        override
+        public virtual override
     {
         return super.safeBatchTransferFrom(originalAddress(from), originalAddress(to), ids, amounts, data);
     }
