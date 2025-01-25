@@ -8,7 +8,7 @@
   "license": "GPL-3.0",
   "dependencies": {
     "@openzeppelin/contracts": "^3.3.0",
-    "hardhat": "^2.0.5"
+    "hardhat": "^2.22.17"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.0",
